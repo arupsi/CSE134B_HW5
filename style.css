@@ -1,0 +1,424 @@
+/*custom font - fallback?*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap');
+
+
+/* CSS Variables w/ fallback sans-serif */
+:root {
+  /*wider gamut color */
+  --primary-color: color(display-p3 0.1 0.4 0.9);
+  --secondary-color: color(display-p3 0.9 0.1 0.3);
+  --accent-color: color(display-p3 0.2 0.9 0.5);
+  --fallback-primary-color: #1966D2;
+  --fallback-secondary-color: #E51A4C;
+  --fallback-accent-color: #33E580;
+  --text-color: #333;
+  --bg-color: #f4f4f4;
+  --main-font: 'Roboto', sans-serif;
+  --heading-font: 'Montserrat', sans-serif;
+  --spacing-unit: 1rem;
+}
+
+
+body {
+  font-family: var(--main-font, sans-serif);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 100%; /* 16px total */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font, sans-serif);
+  font-weight: 700;
+  color: var(--primary-color, var(--fallback-primary-color));
+}
+
+a {
+  color: var(--secondary-color, var(--fallback-secondary-color));
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+/*CSS animations,  Transitions and Transforms*/
+a:hover {
+  color: color-mix(in srgb, var(--secondary-color, var(--fallback-secondary-color)) 80%, #000);
+}
+
+header {
+  background: #fff;
+  padding: calc(var(--spacing-unit) * 1.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid var(--primary-color, var(--fallback-primary-color));
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem; /*relative units*/
+}
+
+header nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-unit);
+}
+
+
+main {
+  padding: var(--spacing-unit);
+  min-height: 80dvh; /*Dynamic viewport units */
+}
+
+section {
+  margin-bottom: calc(var(--spacing-unit) * 2);
+  padding: var(--spacing-unit);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: var(--spacing-unit);
+  margin-top: auto;
+}
+
+footer a {
+    color: var(--accent-color);
+}
+
+/* About Page */
+.about-intro {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.intro-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* 404 Page */
+#error-message {
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 4) 0;
+}
+
+#error-message h1 {
+    font-size: 4rem; /*relative units*/
+    color: var(--secondary-color, var(--fallback-secondary-color));
+    animation: pulse 1.5s infinite;
+}
+
+/*CSS animations,  Transitions and Transforms*/
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-unit);
+}
+
+.timeline-item {
+    background: var(--bg-color);
+    padding: var(--spacing-unit);
+    border-left: 4px solid var(--accent-color, var(--fallback-accent-color));
+    transition: background-color 0.3s ease;
+}
+
+.timeline-item:hover {
+    background-color: color-mix(in srgb, var(--accent-color, var(--fallback-accent-color)) 10%, #fff);
+}
+/* Index Page */
+#hero {
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem; /*relative units*/
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+.hero-figure {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Portfolio Page */
+#project-gallery table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--spacing-unit);
+}
+
+#project-gallery td.image-col {
+    width: 150px;
+}
+
+#project-gallery td.image-col img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+#project-gallery td figure {
+    margin: 0;
+}
+
+#project-gallery td img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 4px;
+}
+
+#project-gallery th, #project-gallery td {
+  padding: var(--spacing-unit);
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+#project-gallery tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+#project-gallery tbody tr:hover {
+  background-color: color-mix(in srgb, var(--primary-color, var(--fallback-primary-color)) 10%, #fff);
+}
+
+/* Contact Page */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+    width: 100%;
+    /*relative units*/
+    padding: 0.5rem; 
+    margin-top: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.social-links-section {
+    text-align: center;
+}
+
+.social-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Portfolio Page */
+#contact-form-section form {
+  display: grid;
+  gap: var(--spacing-unit);
+}
+
+/*CSS animations,  Transitions and Transforms*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+button, .project-wrapper article {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover, .project-wrapper article:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none; /* Hidden by default */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1001;
+}
+
+.hamburger-box {
+    width: 40px;
+    height: 24px;
+    display: inline-block;
+    position: relative;
+}
+
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color, var(--fallback-primary-color));
+    position: absolute;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+.hamburger-inner::before,
+.hamburger-inner::after {
+    content: '';
+    display: block;
+}
+
+.hamburger-inner::before {
+    top: -10px;
+}
+
+.hamburger-inner::after {
+    bottom: -10px;
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+    /* Tablet Styles */
+    .hero-section {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    background: rgba(255, 255, 255, 0.95);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main-nav.is-active {
+      display: flex;
+  }
+
+  header nav ul {
+    margin-top: var(--spacing-unit);
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hamburger-menu {
+      display: block;
+  }
+
+  /* Portfolio Table to Cards */
+  #project-gallery table, 
+  #project-gallery thead, 
+  #project-gallery tbody, 
+  #project-gallery th, 
+  #project-gallery td, 
+  #project-gallery tr {
+      display: block;
+  }
+
+  #project-gallery thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+  }
+
+  #project-gallery tr {
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+  }
+
+  #project-gallery td {
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 50%;
+  }
+
+  #project-gallery td:before {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 45%;
+      padding-right: 10px;
+      white-space: nowrap;
+      content: attr(data-label);
+      font-weight: bold;
+  }
+}
+
+/* Nested CSS */
+nav {
+  ul {
+    li {
+      a {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        &:hover {
+          background-color: var(--primary-color, var(--fallback-primary-color));
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+/* New Selectors */
+main:has(section#error-message) {
+  background-color: color-mix(in srgb, var(--secondary-color, var(--fallback-secondary-color)) 10%, #fff);
+}

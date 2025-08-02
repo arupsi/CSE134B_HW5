@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Aahil Rupsi for project inquiries, collaborations, or to say hello.">
+    <meta name="keywords" content="contact, email, form, Aahil Rupsi, web developer">
+    <title>Aahil Rupsi - Contact</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Aahil Rupsi</h1>
+        <button class="hamburger-menu" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <search>
+            <form action="/search">
+                <label for="search-input">Search this site:</label>
+                <input type="search" id="search-input" name="q">
+                <button type="submit">Search</button>
+            </form>
+        </search>
+    </header>
+
+    <main>
+        <section id="contact-intro">
+            <h1>Get in Touch</h1>
+            <blockquote>
+                <p>"I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious vision. Let's connect and make something great together."</p>
+            </blockquote>
+        </section>
+
+        <hr>
+
+        <section id="contact-form-section">
+            <h2>Contact Form</h2>
+            <form action="#" method="post" class="contact-form">
+                <fieldset>
+                    <legend>Your Information</legend>
+                    
+                    <p>
+                        <label for="name">Full Name:</label>
+                        <input type="text" id="name" name="user_name" placeholder="e.g., Jane Doe" required>
+                    </p>
+                    
+                    <p>
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="user_email" placeholder="e.g., jane.doe@example.com" required>
+                    </p>
+
+                    <p>
+                        <label for="inquiry-type">Reason for Contact:</label>
+                        <select id="inquiry-type" name="inquiry_type">
+                            <option value="general" selected>General Inquiry</option>
+                            <option value="project">Project Proposal</option>
+                            <option value="collaboration">Collaboration Opportunity</option>
+                            <option value="feedback">Website Feedback</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" name="subject" list="subject-suggestions" placeholder="e.g., Project Inquiry" required>
+                        <datalist id="subject-suggestions">
+                            <option value="Project Inquiry"></option>
+                            <option value="Question about a project"></option>
+                            <option value="Coffee Chat"></option>
+                            <option value="Collaboration Idea"></option>
+                        </datalist>
+                    </p>
+
+                    <p>
+                        <label for="message">Your Message:</label>
+                        <textarea id="message" name="user_message" rows="8" placeholder="Please type your detailed message here..." required></textarea>
+                    </p>
+
+                    <button type="submit">Send Message</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <hr>
+
+        <section id="social-links" class="social-links-section">
+            <h2>Connect on Social Media</h2>
+            <ul class="social-list">
+                <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <address>
+            <p>You can also reach me directly at: <a href="mailto:arupsi@ucsd.edu">arupsi@ucsd.edu</a></p>
+            <p>Based in: San Diego, California</p>
+        </address>
+        <p>To save my contact details, you can press <kbd>Ctrl</kbd> + <kbd>S</kbd> or <kbd>Cmd</kbd> + <kbd>S</kbd>.</p>
+        <small>&copy; <time datetime="2025">2025</time> Aahil Rupsi. All Rights Reserved.</small>
+    </footer>
+
+    <script>
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const mainNav = document.querySelector('.main-nav');
+
+        hamburgerMenu.addEventListener('click', () => {
+            mainNav.classList.toggle('is-active');
+            const isExpanded = mainNav.classList.contains('is-active');
+            hamburgerMenu.setAttribute('aria-expanded', isExpanded);
+        });
+    </script>
+
+</body>
+</html>

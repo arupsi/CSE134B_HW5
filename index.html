@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The personal portfolio of Aahil Rupsi, showcasing skills and featured projects.">
+    <meta name="keywords" content="portfolio, web developer, software engineer, Aahil Rupsi, projects">
+    <title>Aahil Rupsi - Personal Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+     <style>
+        /* Empty since NO CSS ALLOWED
+        */
+     </style>
+</head>
+<body>
+    <noscript>This site requires JavaScript to function fully. Please enable it.</noscript>
+
+    <header>
+        <hgroup>
+            <h1>Hi I'm Aahil Rupsi</h1>
+            <p>A Passionate Web Developer</p>
+        </hgroup>
+        <button class="hamburger-menu" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <search>
+            <form action="/search">
+                <label for="search-input">Search this site:</label>
+                <input type="search" id="search-input" name="q">
+                <button type="submit">Search</button>
+            </form>
+        </search>
+    </header>
+
+    <main class="home-main">
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h2>Welcome to My <span>Digital</span> Space</h2>
+                <aside><p>I am a <em>passionate web developer</em> focused on creating <b>clean</b>, <b>efficient</b>, and <b>user-friendly</b> applications. Explore my work and get to know my process.</p></aside>
+            </div>
+            <figure class="hero-figure">
+                <picture>
+                    <source srcset="https://picsum.photos/id/237/800/600.webp" type="image/webp">
+                    <source srcset="https://picsum.photos/id/237/800/600.jpg" type="image/jpeg">
+                    <img src="https://picsum.photos/id/237/400/300.jpg" alt="A professional headshot of Aahil Rupsi" width="200" height="200">
+                </picture>
+                <figcaption>A placeholder image for a professional headshot of me (which i dont have yet).</figcaption>
+            </figure>
+        </section>
+
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Hello! I'm <strong>Aahil Rupsi</strong>, a student at <i>UC San Diego</i> with a passion for technology and design. I specialize in front-end development but have a keen interest in the entire web stack. My goal is to leverage my skills to build impactful and innovative digital experiences.</p>
+            <p>Latest update: <del>Completed</del> <ins>Launched</ins> the new portfolio section on <time datetime="2025-07-15">July 15, 2025</time>.</p>
+            <pre><code>// A little hello world in JavaScript
+function greet() {
+    console.log("Hello, World!");
+}</code></pre>
+        </section>
+
+        <section id="skills">
+            <h2>Core Skills</h2>
+            <p>I have experience with a range of modern web technologies, including:</p>
+   
+            <ol>
+                <li><abbr title="HyperText Markup Language">HTML5</abbr> &amp; <abbr title="Cascading Style Sheets">CSS3</abbr></li>
+                <li><code>JavaScript (ES6+)</code></li>
+                <li><code>React.js</code></li>
+                <li><code>Node.js</code></li>
+                <li><code>Python</code></li>
+            </ol>
+            <svg width="100" height="100">
+                <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+            </svg>
+            <canvas id="myCanvas" width="200" height="100" style="border:1px solid #000000;"></canvas>
+        </section>
+
+        <section id="portfolio">
+            <h2>Featured Projects</h2>
+            <div class="projects-container">
+                <article class="project-card">
+                    <figure class="project-image">
+                        <img src="https://picsum.photos/seed/project1/400/300.jpg" alt="Screenshot of Project One">
+                    </figure>
+                    <div class="project-info">
+                        <h3>Project One: [Project Title]</h3>
+                        <p>[Brief Description of Project Impact]. This project solved [a specific problem] by implementing [a key feature or technology].</p>
+                        <button type="button">View Project Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <figure class="project-image">
+                        <img src="https://picsum.photos/seed/project2/400/300.jpg" alt="Screenshot of Project Two">
+                    </figure>
+                    <div class="project-info">
+                        <h3>Project Two: [Another Project Title]</h3>
+                        <p>[Brief Description of Project Impact]. In this project, I focused on [a specific challenge or goal].</p>
+                        <button type="button">View Project Details</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <h2>Get in Touch</h2>
+        <address>
+            <p>You can reach me via email at: <a href="mailto:arupsi@ucsd.edu">arupsi@ucsd.edu</a></p>
+            <p>Location: San Diego, California</p>
+        </address>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3354.277433939244!2d-117.2340113848176!3d32.88006048096528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dc06c44f1d7975%3A0x43f0a258335ebd1c!2sUniversity%20of%20California%20San%20Diego!5e0!3m2!1sen!2sus!4v1626382714959!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <br>
+        <button id="show-dialog">Subscribe to my Newsletter</button>
+        <dialog id="newsletter-dialog">
+            <form method="dialog">
+                <h2>Subscribe</h2>
+                <p>Enter your email to receive updates.</p>
+                <label for="email-subscribe">Email:</label>
+                <input type="email" id="email-subscribe" name="email">
+                <button type="submit">Subscribe</button>
+                <button type="button" id="close-dialog">Close</button>
+            </form>
+        </dialog>
+        <small>&copy; <time datetime="2025">2025</time> Aahil Rupsi. All Rights Reserved.</small>
+    </footer>
+
+<script>
+    //no JS except to make canvas tag work
+    const c = document.getElementById("myCanvas");
+    const ctx = c.getContext("2d");
+    ctx.moveTo(0, 0);
+    ctx.lineTo(200, 100);
+    ctx.stroke();
+
+    const dialog = document.getElementById('newsletter-dialog');
+    const showDialogButton = document.getElementById('show-dialog');
+    const closeDialogButton = document.getElementById('close-dialog');
+
+    showDialogButton.addEventListener('click', () => {
+        dialog.showModal();
+    });
+
+    closeDialogButton.addEventListener('click', () => {
+        dialog.close();
+    });
+
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mainNav = document.querySelector('.main-nav');
+
+    hamburgerMenu.addEventListener('click', () => {
+        mainNav.classList.toggle('is-active');
+        const isExpanded = mainNav.classList.contains('is-active');
+        hamburgerMenu.setAttribute('aria-expanded', isExpanded);
+    });
+</script>
+
+</body>
+
+</html>
