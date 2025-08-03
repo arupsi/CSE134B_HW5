@@ -7,6 +7,8 @@
     <meta name="keywords" content="portfolio, web developer, software engineer, Aahil Rupsi, projects">
     <title>Aahil Rupsi - Personal Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <script src="project-card.js" defer></script>
+    <script src="main.js" defer></script>
      <style>
         /* Empty since NO CSS ALLOWED
         */
@@ -87,28 +89,9 @@ function greet() {
 
         <section id="portfolio">
             <h2>Featured Projects</h2>
-            <div class="projects-container">
-                <article class="project-card">
-                    <figure class="project-image">
-                        <img src="https://picsum.photos/seed/project1/400/300.jpg" alt="Screenshot of Project One">
-                    </figure>
-                    <div class="project-info">
-                        <h3>Project One: [Project Title]</h3>
-                        <p>[Brief Description of Project Impact]. This project solved [a specific problem] by implementing [a key feature or technology].</p>
-                        <button type="button">View Project Details</button>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <figure class="project-image">
-                        <img src="https://picsum.photos/seed/project2/400/300.jpg" alt="Screenshot of Project Two">
-                    </figure>
-                    <div class="project-info">
-                        <h3>Project Two: [Another Project Title]</h3>
-                        <p>[Brief Description of Project Impact]. In this project, I focused on [a specific challenge or goal].</p>
-                        <button type="button">View Project Details</button>
-                    </div>
-                </article>
+            <button id="load-local">Load Local</button>
+            <button id="load-remote">Load Remote</button>
+            <div class="projects-container" id="project-card-container">
             </div>
         </section>
     </main>
