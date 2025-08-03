@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CRUD operations for project data management">
+    <title>CRUD Operations - Aahil Rupsi Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <hgroup>
+            <h1>Project Data Management</h1>
+            <p>Create, Read, Update, Delete Operations</p>
+        </hgroup>
+        <button class="hamburger-menu" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="crud.html" aria-current="page">CRUD</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="crud-main">
+        <section class="crud-controls">
+            <h2>Data Source</h2>
+            <div class="data-source-toggle">
+                <label>
+                    <input type="radio" name="dataSource" value="local" checked>
+                    Local Storage
+                </label>
+                <label>
+                    <input type="radio" name="dataSource" value="remote">
+                    Cloud (JSONBin)
+                </label>
+            </div>
+        </section>
+
+        <section class="crud-form">
+            <h2>Project Form</h2>
+            <form id="project-form">
+                <input type="hidden" id="project-id" name="projectId">
+                
+                <div class="form-group">
+                    <label for="project-title">Title:</label>
+                    <input type="text" id="project-title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-description">Description:</label>
+                    <textarea id="project-description" name="description" required rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-image-url">Image URL:</label>
+                    <input type="url" id="project-image-url" name="imageUrl" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-url">Project URL:</label>
+                    <input type="url" id="project-url" name="projectUrl" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="create-btn">Create</button>
+                    <button type="button" id="update-btn" disabled>Update</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="crud-list">
+            <h2>Project List</h2>
+            <div class="list-actions">
+                <button id="refresh-btn">Refresh Data</button>
+                <button id="clear-all-btn">Clear All</button>
+            </div>
+            <div id="projects-list" class="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+
+        <section class="status-section">
+            <div id="status-message" class="status-message"></div>
+        </section>
+    </main>
+
+    <footer>
+        <small>&copy; 2025 Aahil Rupsi. All Rights Reserved.</small>
+    </footer>
+
+    <script>
+        class CRUDManager {
+            constructor() {
+                this.currentDataSource = 'local';
+                this.editingProjectId = null;
+                this.apiKey = '$2a$10$mGjGk7aCSvOdzssmujgsZOSh1EewzsJA6fvNtD7BfX/5byKECOFxm';
+                this.binId = '688eb0737b4b8670d8abe6bb';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadProjects();
+            }
+
+            bindEvents() {
+                // Data source toggle
+                document.querySelectorAll('input[name="dataSource"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.currentDataSource = e.target.value;
+                        this.loadProjects();
+                        this.showStatus(`Switched to ${e.target.value} storage`);
+                    });
+                });
+
+                // Form submission
+                document.getElementById('project-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit();
+                });
+
+                // Form buttons
+                document.getElementById('update-btn').addEventListener('click', () => {
+                    this.handleUpdate();
+                });
+
+                document.getElementById('cancel-btn').addEventListener('click', () => {
+                    this.resetForm();
+                });
+
+                // List actions
+                document.getElementById('refresh-btn').addEventListener('click', () => {
+                    this.loadProjects();
+                });
+
+                document.getElementById('clear-all-btn').addEventListener('click', () => {
+                    this.clearAllProjects();
+                });
+
+                // Hamburger menu
+                const hamburgerMenu = document.querySelector('.hamburger-menu');
+                const mainNav = document.querySelector('.main-nav');
+                
+                hamburgerMenu.addEventListener('click', () => {
+                    mainNav.classList.toggle('is-active');
+                    const isExpanded = mainNav.classList.contains('is-active');
+                    hamburgerMenu.setAttribute('aria-expanded', isExpanded);
+                });
+            }
+
+            async handleFormSubmit() {
+                const formData = this.getFormData();
+                if (!this.validateForm(formData)) return;
+
+                if (this.editingProjectId) {
+                    await this.updateProject(this.editingProjectId, formData);
+                } else {
+                    await this.createProject(formData);
+                }
+            }
+
+            async handleUpdate() {
+                if (!this.editingProjectId) return;
+                
+                const formData = this.getFormData();
+                if (!this.validateForm(formData)) return;
+
+                await this.updateProject(this.editingProjectId, formData);
+            }
+
+            getFormData() {
+                return {
+                    title: document.getElementById('project-title').value.trim(),
+                    description: document.getElementById('project-description').value.trim(),
+                    imageUrl: document.getElementById('project-image-url').value.trim(),
+                    projectUrl: document.getElementById('project-url').value.trim()
+                };
+            }
+
+            validateForm(data) {
+                if (!data.title || !data.description || !data.imageUrl || !data.projectUrl) {
+                    this.showStatus('All fields are required', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            async createProject(projectData) {
+                try {
+                    if (this.currentDataSource === 'local') {
+                        await this.createProjectLocal(projectData);
+                    } else {
+                        await this.createProjectRemote(projectData);
+                    }
+                    this.showStatus('Project created successfully', 'success');
+                    this.resetForm();
+                    this.loadProjects();
+                } catch (error) {
+                    this.showStatus(`Error creating project: ${error.message}`, 'error');
+                }
+            }
+
+            async createProjectLocal(projectData) {
+                const projects = this.getLocalProjects();
+                const newProject = {
+                    id: Date.now().toString(),
+                    ...projectData
+                };
+                projects.push(newProject);
+                localStorage.setItem('projectData', JSON.stringify(projects));
+            }
+
+            async createProjectRemote(projectData) {
+                const projects = await this.getRemoteProjects();
+                const newProject = {
+                    id: Date.now().toString(),
+                    ...projectData
+                };
+                projects.push(newProject);
+                
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': this.apiKey
+                    },
+                    body: JSON.stringify(projects)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create project remotely');
+                }
+            }
+
+            async loadProjects() {
+                try {
+                    let projects;
+                    if (this.currentDataSource === 'local') {
+                        projects = this.getLocalProjects();
+                    } else {
+                        projects = await this.getRemoteProjects();
+                    }
+                    this.displayProjects(projects);
+                } catch (error) {
+                    this.showStatus(`Error loading projects: ${error.message}`, 'error');
+                }
+            }
+
+            getLocalProjects() {
+                const stored = localStorage.getItem('projectData');
+                return stored ? JSON.parse(stored) : [];
+            }
+
+            async getRemoteProjects() {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': this.apiKey
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch remote projects');
+                }
+
+                const data = await response.json();
+                return data.record || [];
+            }
+
+            displayProjects(projects) {
+                const container = document.getElementById('projects-list');
+                container.innerHTML = '';
+
+                if (projects.length === 0) {
+                    container.innerHTML = '<p>No projects found</p>';
+                    return;
+                }
+
+                projects.forEach(project => {
+                    const projectElement = this.createProjectElement(project);
+                    container.appendChild(projectElement);
+                });
+            }
+
+            createProjectElement(project) {
+                const div = document.createElement('div');
+                div.className = 'project-item';
+                div.innerHTML = `
+                    <div class="project-content">
+                        <h3>${this.escapeHtml(project.title)}</h3>
+                        <p>${this.escapeHtml(project.description)}</p>
+                        <img src="${this.escapeHtml(project.imageUrl)}" alt="${this.escapeHtml(project.title)}" width="200" height="150">
+                        <p><a href="${this.escapeHtml(project.projectUrl)}" target="_blank">View Project</a></p>
+                    </div>
+                    <div class="project-actions">
+                        <button onclick="crudManager.editProject('${project.id || projects.indexOf(project)}')">Edit</button>
+                        <button onclick="crudManager.deleteProject('${project.id || projects.indexOf(project)}')">Delete</button>
+                    </div>
+                `;
+                return div;
+            }
+
+            async editProject(projectId) {
+                try {
+                    let projects;
+                    if (this.currentDataSource === 'local') {
+                        projects = this.getLocalProjects();
+                    } else {
+                        projects = await this.getRemoteProjects();
+                    }
+
+                    const project = projects.find(p => (p.id || projects.indexOf(p).toString()) === projectId);
+                    if (!project) {
+                        this.showStatus('Project not found', 'error');
+                        return;
+                    }
+
+                    this.populateForm(project);
+                    this.editingProjectId = projectId;
+                    
+                    document.getElementById('create-btn').style.display = 'none';
+                    document.getElementById('update-btn').disabled = false;
+                    document.getElementById('update-btn').style.display = 'inline-block';
+                    
+                    this.showStatus('Project loaded for editing', 'info');
+                } catch (error) {
+                    this.showStatus(`Error loading project for edit: ${error.message}`, 'error');
+                }
+            }
+
+            populateForm(project) {
+                document.getElementById('project-title').value = project.title;
+                document.getElementById('project-description').value = project.description;
+                document.getElementById('project-image-url').value = project.imageUrl;
+                document.getElementById('project-url').value = project.projectUrl;
+            }
+
+            async updateProject(projectId, projectData) {
+                try {
+                    if (this.currentDataSource === 'local') {
+                        await this.updateProjectLocal(projectId, projectData);
+                    } else {
+                        await this.updateProjectRemote(projectId, projectData);
+                    }
+                    this.showStatus('Project updated successfully', 'success');
+                    this.resetForm();
+                    this.loadProjects();
+                } catch (error) {
+                    this.showStatus(`Error updating project: ${error.message}`, 'error');
+                }
+            }
+
+            async updateProjectLocal(projectId, projectData) {
+                const projects = this.getLocalProjects();
+                const index = projects.findIndex(p => (p.id || projects.indexOf(p).toString()) === projectId);
+                if (index !== -1) {
+                    projects[index] = { ...projects[index], ...projectData };
+                    localStorage.setItem('projectData', JSON.stringify(projects));
+                }
+            }
+
+            async updateProjectRemote(projectId, projectData) {
+                const projects = await this.getRemoteProjects();
+                const index = projects.findIndex(p => (p.id || projects.indexOf(p).toString()) === projectId);
+                if (index !== -1) {
+                    projects[index] = { ...projects[index], ...projectData };
+                    
+                    const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': this.apiKey
+                        },
+                        body: JSON.stringify(projects)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to update project remotely');
+                    }
+                }
+            }
+
+            async deleteProject(projectId) {
+                if (!confirm('Are you sure you want to delete this project?')) return;
+
+                try {
+                    if (this.currentDataSource === 'local') {
+                        await this.deleteProjectLocal(projectId);
+                    } else {
+                        await this.deleteProjectRemote(projectId);
+                    }
+                    this.showStatus('Project deleted successfully', 'success');
+                    this.loadProjects();
+                } catch (error) {
+                    this.showStatus(`Error deleting project: ${error.message}`, 'error');
+                }
+            }
+
+            async deleteProjectLocal(projectId) {
+                const projects = this.getLocalProjects();
+                const filteredProjects = projects.filter(p => (p.id || projects.indexOf(p).toString()) !== projectId);
+                localStorage.setItem('projectData', JSON.stringify(filteredProjects));
+            }
+
+            async deleteProjectRemote(projectId) {
+                const projects = await this.getRemoteProjects();
+                const filteredProjects = projects.filter(p => (p.id || projects.indexOf(p).toString()) !== projectId);
+                
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': this.apiKey
+                    },
+                    body: JSON.stringify(filteredProjects)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete project remotely');
+                }
+            }
+
+            async clearAllProjects() {
+                if (!confirm('Are you sure you want to delete ALL projects? This cannot be undone.')) return;
+
+                try {
+                    if (this.currentDataSource === 'local') {
+                        localStorage.setItem('projectData', JSON.stringify([]));
+                    } else {
+                        const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Master-Key': this.apiKey
+                            },
+                            body: JSON.stringify([])
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to clear remote projects');
+                        }
+                    }
+                    this.showStatus('All projects cleared successfully', 'success');
+                    this.loadProjects();
+                } catch (error) {
+                    this.showStatus(`Error clearing projects: ${error.message}`, 'error');
+                }
+            }
+
+            resetForm() {
+                document.getElementById('project-form').reset();
+                this.editingProjectId = null;
+                
+                document.getElementById('create-btn').style.display = 'inline-block';
+                document.getElementById('update-btn').disabled = true;
+                document.getElementById('update-btn').style.display = 'none';
+            }
+
+            showStatus(message, type = 'info') {
+                const statusElement = document.getElementById('status-message');
+                statusElement.textContent = message;
+                statusElement.className = `status-message ${type}`;
+                
+                setTimeout(() => {
+                    statusElement.textContent = '';
+                    statusElement.className = 'status-message';
+                }, 5000);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize CRUD manager
+        let crudManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            crudManager = new CRUDManager();
+        });
+    </script>
+
+    <style>
+        .crud-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .crud-controls, .crud-form, .crud-list {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .data-source-toggle {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .data-source-toggle label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-actions button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-actions button[type="submit"], #update-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .form-actions button[type="button"] {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .form-actions button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .list-actions {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .list-actions button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .project-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .project-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .project-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .project-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .project-actions button:first-child {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .project-actions button:last-child {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background-color: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+    </style>
+</body>
+</html>
